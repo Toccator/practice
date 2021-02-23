@@ -1,6 +1,9 @@
 package PatternInsert;
 
-import insertData.utils.RedisPipeline;
+
+
+import pipeline.JedisClusterPipeline;
+import redis.clients.jedis.RedisPipeline;
 
 import java.util.Map;
 import java.util.function.Function;
@@ -11,23 +14,25 @@ public interface CsvImportOperation {
 
     CsvImportOperation SET = new AbstractCsvImportOperation("SET") {
         @Override
-        public void importCsvLine(RedisPipeline redisPipeline, Csvline csvline) {
+        public void importCsvLine(JedisClusterPipeline redisPipeline, Csvline csvline) {
+            redisPipeline.set(csvline.getKey(),csvline.getValue());
             redisPipeline.sync();
-
         }
     };
 
     CsvImportOperation HSET = new AbstractCsvImportOperation("HSET") {
         @Override
-        public void importCsvLine(RedisPipeline redisPipeline, Csvline csvline) {
-
+        public void importCsvLine(JedisClusterPipeline redisPipeline, Csvline csvline) {
+            redisPipeline.hset(csvline.getKey(),csvline.getField(),csvline.getValue());
+            redisPipeline.sync();
         }
     };
 
     CsvImportOperation ZADD = new AbstractCsvImportOperation("ZADD") {
         @Override
-        public void importCsvLine(RedisPipeline redisPipeline, Csvline csvline) {
-
+        public void importCsvLine(JedisClusterPipeline redisPipeline, Csvline csvline) {
+            redisPipeline.zadd(csvline.getKey(),Double.parseDouble(csvline.getField()),csvline.getValue());
+            redisPipeline.sync();
         }
     };
 
@@ -35,7 +40,8 @@ public interface CsvImportOperation {
     Map<String, CsvImportOperation> OPERATIONS  = Stream.of(SET,HSET,ZADD).collect(Collectors.toMap(CsvImportOperation::getName, Function.identity()));
 
 
-    void importCsvLine(RedisPipeline redisPipeline, Csvline csvline);
+    void importCsvLine(JedisClusterPipeline redisPipeline, Csvline csvline);
+
 
     String getName();
 

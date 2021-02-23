@@ -1,9 +1,11 @@
 package PatternInsert;
 
 import com.alibaba.fastjson.JSON;
-import insertData.utils.RedisPipeline;
-import jedis.GetOpt.GetOpt;
+
+import GetOpt.GetOpt;
 import org.apache.commons.io.FileUtils;
+import pipeline.JedisClusterPipeline;
+import pipeline.RedisCluster;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -46,7 +48,7 @@ public class CsvImportMain {
         CsvImportOperation csvImportOperation = CsvImportOperation.OPERATIONS.get(csvImportConfig.getOperation());
         File file1 = new File(csvPathAndName);
 
-        RedisPipeline redisPipeline = new RedisPipeline();
+        JedisClusterPipeline redisPipeline = RedisCluster.getJedisPipLine();
 
         try(BufferedReader br = new BufferedReader(new FileReader(file1))) {
             String headerLine = br.readLine();
@@ -67,8 +69,8 @@ public class CsvImportMain {
                     count = 0;
                     redisPipeline.sync();
                 }
-                redisPipeline.sync();
             }
+            redisPipeline.sync();
         }catch (IOException e){
             e.printStackTrace();
         }
