@@ -24,8 +24,8 @@ public class CsvImportMain {
     public static final Pattern VAR_PATTERN = Pattern.compile(VAR_STRING);
     public static void main(String[] args)throws IOException{
         GetOpt getOpt = new GetOpt(args,"c:e:h");
-        String jsonFile = "/user/etrm/offline_calc/test.csv";
-        String csvPathAndName = "/user/etrm/offline_calc/json";
+        String jsonFile = "/user/test.csv";
+        String csvPathAndName = "/user/json";
         int option;
         while ((option = getOpt.getNextOption()) != -1) {
             switch (option) {
@@ -56,7 +56,7 @@ public class CsvImportMain {
             Map<String,Integer> headerToIndexMap = processHeaders(headerLine,csvImportConfig);
 
             String line = null;
-            long count = 0;
+//            long count = 0;
             while ((line = br.readLine())!= null) {
                 try {
                     Csvline csvline = convertLine(line,csvImportConfig,headerToIndexMap);
@@ -64,11 +64,11 @@ public class CsvImportMain {
                 }catch (Exception e){
                     continue;
                 }
-                count++;
-                if(count == 20000){
-                    count = 0;
-                    redisPipeline.sync();
-                }
+//                count++;
+//                if(count == 20000){
+//                    count = 0;
+//                    redisPipeline.sync();
+//                }
             }
             redisPipeline.sync();
         }catch (IOException e){

@@ -1,4 +1,4 @@
-package javabase;
+package javaLoadingSequence;
 
 public class Mainf implements A {//在java中 一个类中不能继承多个接口，但是可以通过一个接口继承多个接口来实现
     int t;
