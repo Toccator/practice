@@ -270,6 +270,13 @@ public class JedisClusterPipeline extends PipelineBase implements Closeable {
 
     public Response<Long> hset(String key,String field,String value){
         Response<Long>  response = super.hset(key,field,value);
+        countRowSync();
+        return response;
+    }
+
+    public Response<Long> zadd (String key,double score,String value){
+        Response<Long> response = super.zadd(key,score,value);
+        countRowSync();
         return response;
     }
 
