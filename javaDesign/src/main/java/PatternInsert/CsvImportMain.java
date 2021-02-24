@@ -123,6 +123,7 @@ public class CsvImportMain {
 
     }
 
+
     private static Map<String,Integer> processHeaders(String headerLine,CsvImportConfig csvImportConfig){
         String[] headers = headerLine.split(csvImportConfig.getDelimiter());
         Map<String,Integer> HeaderToIndexMap = new HashMap<>();
